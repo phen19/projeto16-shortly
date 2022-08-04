@@ -15,4 +15,7 @@ const loginSchema = joi.object({
   password: joi.string().required()
 });
 
-export {registerSchema, loginSchema}
+const newUrlSchema = joi.object({
+  url: joi.string().uri().required()
+})
+export {registerSchema, loginSchema, newUrlSchema}
