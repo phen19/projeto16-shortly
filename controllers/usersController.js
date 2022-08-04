@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-export async function signUpUser(req, res){
+async function signUpUser(req, res){
     try{
     const user = res.locals.user
     
@@ -19,3 +19,34 @@ export async function signUpUser(req, res){
         res.sendStatus(500);
     }
 }
+
+async function signInUser(req, res) {
+    const { email, password } = req.body;
+
+    try {
+        const user = await connection.query(`SELECT * FROM users WHERE email = $1`, [email])
+
+        if (user && bcrypt.compareSync(password, user.rows[0].password)) {
+            const token = jwt.sign(
+                {
+                    id: user.rows[0].id,
+                    name: user.rows[0].name
+                },
+                process.env.JWT_KEY,
+                {expiresIn: '15m'}
+            );
+            res.status(200).send({
+                message: "Authentication Success ",
+                token: token
+            });
+        }
+        else {
+            res.status(401).send("Authentication Failure");
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Bad Request");
+    }
+}
+
+export { signUpUser, signInUser };

@@ -8,4 +8,11 @@ const registerSchema = joi.object({
     confirmPassword: joi.any().valid(joi.ref('password')).required()
   });
 
-export default registerSchema
+
+
+const loginSchema = joi.object({
+  email: joi.string().email().required(),
+  password: joi.string().required()
+});
+
+export {registerSchema, loginSchema}
