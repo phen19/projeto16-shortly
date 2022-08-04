@@ -62,7 +62,9 @@ export async function openShortUrl(req, res){
 
 export async function deleteUrl(req, res){
     try{
-        
+        const id = res.locals.id
+        await connection.query(`DELETE FROM urls WHERE id=$1`, [id])
+        res.status(204).send("deletado")
     }catch (err){
         console.error(err);
         res.sendStatus(500);
