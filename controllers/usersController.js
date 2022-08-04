@@ -79,7 +79,7 @@ async function getRanking(req,res){
     try{
         const ranking = await connection.query(`SELECT u.id, u.name, COUNT(CASE WHEN ur."userId" = u.id THEN u.id END) AS "linksCount", SUM(ur."visitCount") AS "visitCount"
         FROM users u
-        LEFT JOIN urls ur ON ur."userId"= u.id
+        RIGHT JOIN urls ur ON ur."userId"= u.id
         GROUP BY u.id
         ORDER BY "visitCount" DESC
         LIMIT 10`)
