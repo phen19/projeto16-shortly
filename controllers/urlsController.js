@@ -22,3 +22,20 @@ export async function shortenUrl(req, res){
         res.sendStatus(500);
     }
 }
+
+export async function getUrlById (req, res){
+    try{
+        const id = req.params.id
+
+        const url = await connection.query(`SELECT id, "shortUrl", url FROM urls WHERE id = $1`, [id])
+
+        if(url.rowCount === 0){
+            res.status(404).send('não existe')
+        }
+
+        res.status(200).send(url.rows[0])
+    }catch (err){
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
