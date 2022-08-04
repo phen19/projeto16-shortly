@@ -14,8 +14,11 @@ export async function shortenUrl(req, res){
     await connection.query(`
     INSERT INTO urls ("userId", url, "shortUrl") 
     VALUES ($1, $2, $3)`, [id, url, shortUrl])
-
-    res.sendStatus(201)
+    
+    const shortUrlcreated = await connection.query(`
+    SELECT "shortUrl" FROM urls WHERE "shortUrl" = $1`, [shortUrl])
+    console.log(shortUrlcreated)
+    res.status(201).send(shortUrlcreated.rows[0])
     
     }catch (err){
         console.error(err);
@@ -34,6 +37,32 @@ export async function getUrlById (req, res){
         }
 
         res.status(200).send(url.rows[0])
+    }catch (err){
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
+
+export async function openShortUrl(req, res){
+    try{
+        const shortUrl = req.params.shortUrl;
+        const url = await connection.query(`SELECT url FROM urls WHERE "shortUrl" = $1`, [shortUrl]);
+        
+        if(url.rowCount === 0){
+            res.status(404).send('não existe')
+        }
+        console.log(url.rows[0].url)
+        res.status(200).redirect(url.rows[0].url)
+    
+    }catch (err){
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
+
+export async function deleteUrl(req, res){
+    try{
+        
     }catch (err){
         console.error(err);
         res.sendStatus(500);

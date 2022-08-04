@@ -25,8 +25,7 @@ async function signInUser(req, res) {
 
     try {
         const user = await connection.query(`SELECT * FROM users WHERE email = $1`, [email])
-
-        if (user && bcrypt.compareSync(password, user.rows[0].password)) {
+        if (user.rowCount >0 && bcrypt.compareSync(password, user.rows[0].password)) {
             const token = jwt.sign(
                 {
                     id: user.rows[0].id,
