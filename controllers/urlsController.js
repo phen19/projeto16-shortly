@@ -50,8 +50,11 @@ export async function openShortUrl(req, res){
         
         if(url.rowCount === 0){
             res.status(404).send('não existe')
+            return
         }
-        console.log(url.rows[0].url)
+        
+        await connection.query(`
+        UPDATE urls SET "visitCount" = "visitCount"+1 WHERE "shortUrl" = $1`, [shortUrl])
         res.status(200).redirect(url.rows[0].url)
     
     }catch (err){

@@ -48,4 +48,30 @@ async function signInUser(req, res) {
     }
 }
 
-export { signUpUser, signInUser };
+async function getUrlsByUser(req, res){
+    const id = res.locals.userId
+
+    try{
+        const urls = await connection.query(`
+        SELECT u.id, u.name, SUM(ur."visitCount") AS "visitCount",
+        json_agg(jsonb_build_object(
+            'id', ur.id,
+            'shortUrl', ur."shortUrl",
+            'url', ur.url,
+            'visitCount', ur."visitCount"
+            )) AS "shortenedUrls"
+        FROM users u
+        JOIN urls ur ON ur."userId" = u.id
+        WHERE u.id = $1
+        GROUP BY u.id
+        `, [id])
+        console.log(id)
+            console.log(urls)
+        res.status(200).send(urls.rows[0])
+    }catch(err){
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
+
+export { signUpUser, signInUser, getUrlsByUser };
