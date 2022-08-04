@@ -74,4 +74,21 @@ async function getUrlsByUser(req, res){
     }
 }
 
-export { signUpUser, signInUser, getUrlsByUser };
+async function getRanking(req,res){
+
+    try{
+        const ranking = await connection.query(`SELECT u.id, u.name, COUNT(CASE WHEN ur."userId" = u.id THEN u.id END) AS "linksCount", SUM(ur."visitCount") AS "visitCount"
+        FROM users u
+        LEFT JOIN urls ur ON ur."userId"= u.id
+        GROUP BY u.id
+        ORDER BY "visitCount" DESC
+        LIMIT 10`)
+
+        res.status(200).send(ranking.rows)
+    } catch (err){
+        console.error(err);
+        res.sendStatus(500)
+    }
+}
+
+export { signUpUser, signInUser, getUrlsByUser, getRanking };
