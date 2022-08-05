@@ -1,15 +1,14 @@
-import connection from '../database/database.js';
 import {registerSchema, loginSchema, newUrlSchema} from '../schemas/schemas.js'
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { getUserByEmail} from "../repositories/userRepository.js"
 dotenv.config();
 
 export async function validateUser(req, res, next){
    
     const user = req.body
     const validation = registerSchema.validate(user,{abortEarly: false});
-
     const passwordHash = bcrypt.hashSync(user.password, 10);
 
 
@@ -20,7 +19,7 @@ export async function validateUser(req, res, next){
     delete user.confirmPassword
 
     try {
-        const existingUser = await connection.query('SELECT * FROM users WHERE email = $1', [user.email])
+        const existingUser = await getUserByEmail(user.email)
         if (existingUser.rowCount !== 0) {
             return res.sendStatus(409);
         }
