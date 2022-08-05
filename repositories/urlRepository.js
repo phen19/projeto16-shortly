@@ -13,7 +13,7 @@ async function getShortUrl(shortUrl){
 }
 
 async function getById(id){
-    return await connection.query(`SELECT id, "shortUrl", url FROM urls WHERE id = $1`, [id])
+    return await connection.query(`SELECT id, "userId" ,"shortUrl", url FROM urls WHERE id = $1`, [id])
 }
 
 async function openUrl(shortUrl){

@@ -30,6 +30,7 @@ export async function getUrlById (req, res){
         if(url.rowCount === 0){
             res.status(404).send('não existe')
         }
+        delete url.rows[0].userId
 
         res.status(200).send(url.rows[0])
     }catch (err){
