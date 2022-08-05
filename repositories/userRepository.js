@@ -13,7 +13,7 @@ async function getUserRanking(){
 
 async function getUrlUser(id) {
     const urls = await connection.query(`
-        SELECT u.id, u.name, SUM(ur."visitCount") AS "visitCount",
+        SELECT u.id, u.name, COALESCE(SUM(ur."visitCount"),0) AS "visitCount",
         json_agg(jsonb_build_object(
             'id', ur.id,
             'shortUrl', ur."shortUrl",
@@ -21,7 +21,7 @@ async function getUrlUser(id) {
             'visitCount', ur."visitCount"
             )) AS "shortenedUrls"
         FROM users u
-        JOIN urls ur ON ur."userId" = u.id
+        LEFT JOIN urls ur ON ur."userId" = u.id
         WHERE u.id = $1
         GROUP BY u.id
         `, [id])
