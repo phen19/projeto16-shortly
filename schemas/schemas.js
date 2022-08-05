@@ -6,7 +6,7 @@ const registerSchema = joi.object({
     email: joi.string().email().required(),
     password: joi.string().required(),
     confirmPassword: joi.any().valid(joi.ref('password')).required()
-  });
+});
 
 
 

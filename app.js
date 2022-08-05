@@ -13,6 +13,6 @@ app.use(userRouter)
 app.use(urlRouter)
 
 app.listen(process.env.PORT, () => {
-    console.log('Server listening on port 4000.');
+    console.log('Server is UP.');
 });
   

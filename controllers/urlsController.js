@@ -1,7 +1,6 @@
-import connection from '../database/database.js';
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { nanoid } from 'nanoid';
+import { createShortUrl, getById, getShortUrl, openUrl, visitCountIncrement, deleteById } from '../repositories/urlRepository.js';
 dotenv.config();
 
 
@@ -11,13 +10,9 @@ export async function shortenUrl(req, res){
     const shortUrl = nanoid(8)
     const id = res.locals.userId
 
-    await connection.query(`
-    INSERT INTO urls ("userId", url, "shortUrl") 
-    VALUES ($1, $2, $3)`, [id, url, shortUrl])
+    await createShortUrl(id, shortUrl, url)
     
-    const shortUrlcreated = await connection.query(`
-    SELECT "shortUrl" FROM urls WHERE "shortUrl" = $1`, [shortUrl])
-    console.log(shortUrlcreated)
+    const shortUrlcreated = await getShortUrl(shortUrl)
     res.status(201).send(shortUrlcreated.rows[0])
     
     }catch (err){
@@ -30,7 +25,7 @@ export async function getUrlById (req, res){
     try{
         const id = req.params.id
 
-        const url = await connection.query(`SELECT id, "shortUrl", url FROM urls WHERE id = $1`, [id])
+        const url = await getById(id)
 
         if(url.rowCount === 0){
             res.status(404).send('não existe')
@@ -46,15 +41,14 @@ export async function getUrlById (req, res){
 export async function openShortUrl(req, res){
     try{
         const shortUrl = req.params.shortUrl;
-        const url = await connection.query(`SELECT url FROM urls WHERE "shortUrl" = $1`, [shortUrl]);
+        const url = await openUrl(shortUrl)
         
         if(url.rowCount === 0){
             res.status(404).send('não existe')
             return
         }
         
-        await connection.query(`
-        UPDATE urls SET "visitCount" = "visitCount"+1 WHERE "shortUrl" = $1`, [shortUrl])
+        await visitCountIncrement(shortUrl)
         res.status(200).redirect(url.rows[0].url)
     
     }catch (err){
@@ -66,7 +60,7 @@ export async function openShortUrl(req, res){
 export async function deleteUrl(req, res){
     try{
         const id = res.locals.id
-        await connection.query(`DELETE FROM urls WHERE id=$1`, [id])
+        await deleteById(id)
         res.status(204).send("deletado")
     }catch (err){
         console.error(err);
