@@ -51,8 +51,8 @@ async function getUrlsByUser(req, res){
     const id = res.locals.userId
 
     try{
-        
-        res.status(200).send(getUrlUser[id])
+        const info = await getUrlUser(id)
+        res.status(200).send(info)
     }catch(err){
         console.error(err);
         res.sendStatus(500);
