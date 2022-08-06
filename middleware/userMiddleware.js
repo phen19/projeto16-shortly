@@ -1,4 +1,4 @@
-import {registerSchema, loginSchema, newUrlSchema} from '../schemas/schemas.js'
+import {registerSchema, loginSchema} from '../schemas/schemas.js'
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -57,14 +57,4 @@ export async function verifyJWT( req, res, next){
         next()
     })
 
-}
-
-export async function validateNewUrl(req, res, next){
-    const validation = newUrlSchema.validate(req.body, {abortEarly: false});
-
-    if(validation.error){
-        return res.status(422).send(validation.error.details.map(item=> item.message))
-    }
-
-    next()
 }

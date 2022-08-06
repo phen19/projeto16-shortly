@@ -6,7 +6,7 @@ dotenv.config();
 
 export async function shortenUrl(req, res){
     try{
-    const url = req.body.url
+    const url = res.locals.url
     const shortUrl = nanoid(8)
     const id = res.locals.userId
 

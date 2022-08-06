@@ -28,4 +28,8 @@ async function visitCountIncrement(shortUrl){
 async function deleteById (id){
     await connection.query(`DELETE FROM urls WHERE id=$1`, [id])
 }
-export {createShortUrl, getShortUrl, getById, openUrl, visitCountIncrement, deleteById}
+
+async function checkUrlUser(url, userId){
+    return await connection.query(`SELECT * FROM urls WHERE url = $1 AND "userId" = $2`, [url, userId])
+}
+export {createShortUrl, getShortUrl, getById, openUrl, visitCountIncrement, deleteById, checkUrlUser}

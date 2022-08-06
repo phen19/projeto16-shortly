@@ -1,8 +1,8 @@
 import {Router} from "express"
 import { deleteUrl, openShortUrl, shortenUrl } from "../controllers/urlsController.js";
-import { validateNewUrl, verifyJWT } from "../middleware/userMiddleware.js";
+import { verifyJWT } from "../middleware/userMiddleware.js";
 import { getUrlById } from "../controllers/urlsController.js";
-import { validateUrlDeletion } from "../middleware/urlsMiddleware.js";
+import { validateUrlDeletion, validateNewUrl } from "../middleware/urlsMiddleware.js";
 
 const router = Router();
 
