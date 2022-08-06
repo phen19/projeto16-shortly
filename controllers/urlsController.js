@@ -50,7 +50,9 @@ export async function openShortUrl(req, res){
         }
         
         await visitCountIncrement(shortUrl)
-        res.status(200).redirect(url.rows[0].url)
+        
+        
+        res.redirect(200, url.rows[0].url);
     
     }catch (err){
         console.error(err);
